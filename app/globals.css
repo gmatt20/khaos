@@ -1,26 +1,140 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --grid-template-columns-16: repeat(16, minmax(0, 1fr));
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@property --c1 { syntax: "<color>"; inherits: true; initial-value: #ff2d55; }
+@property --c2 { syntax: "<color>"; inherits: true; initial-value: #7a1cff; }
+@property --c3 { syntax: "<color>"; inherits: true; initial-value: #ffd60a; }
+
+html, body { background: #04040a; color: #fff; }
+body { font-family: var(--font-geist-sans), -apple-system, "SF Pro Display", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+button:disabled { cursor: default; }
+
+.khaos { transition: --c1 0.9s ease, --c2 0.9s ease, --c3 0.9s ease; user-select: none; }
+.grid-cols-16 { grid-template-columns: repeat(16, minmax(0, 1fr)); }
+.no-sb { scrollbar-width: none; }
+.no-sb::-webkit-scrollbar { display: none; }
+
+.glass {
+  background: linear-gradient(180deg, rgba(14, 14, 24, 0.76), rgba(6, 6, 14, 0.7));
+  backdrop-filter: blur(30px) saturate(170%);
+  -webkit-backdrop-filter: blur(30px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09), 0 30px 80px -30px rgba(0, 0, 0, 0.8);
+  border-radius: 26px;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.logo-text {
+  background: linear-gradient(100deg, #fff 10%, var(--c3) 40%, var(--c1) 65%, var(--c2) 95%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: sheen 7s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 60px color-mix(in oklab, var(--c1) 45%, transparent));
 }
+.logo-dot { background: conic-gradient(var(--c1), var(--c3), var(--c2), var(--c1)); box-shadow: 0 0 16px var(--c1); animation: spin 4s linear infinite; }
+@keyframes sheen { to { background-position: 100% 0; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); filter: blur(8px); } }
+.rise { animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+
+.cta {
+  background: linear-gradient(100deg, #fff, color-mix(in oklab, var(--c3) 70%, #fff));
+  box-shadow: 0 10px 40px -8px color-mix(in oklab, var(--c1) 70%, transparent), inset 0 1px 0 #fff;
+  transition: transform 0.2s cubic-bezier(0.2, 1.6, 0.4, 1), box-shadow 0.3s, opacity 0.2s;
+}
+.cta:hover:not(:disabled) { transform: scale(1.04); box-shadow: 0 14px 60px -6px color-mix(in oklab, var(--c1) 90%, transparent), inset 0 1px 0 #fff; }
+.cta:active:not(:disabled) { transform: scale(0.96); }
+
+.chip-btn { height: 36px; width: 30px; border-radius: 999px; color: rgba(255, 255, 255, 0.6); font-size: 16px; transition: background 0.15s, color 0.15s; }
+.chip-btn:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+
+.tog {
+  display: inline-flex; align-items: center; white-space: nowrap;
+  height: 34px; padding: 0 14px; border-radius: 999px; font-size: 12px; font-weight: 500; color: rgba(255, 255, 255, 0.75);
+  background: rgba(20, 20, 32, 0.55); border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s;
+}
+.tog:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
+.tog:active { transform: scale(0.95); }
+.tog.on { background: color-mix(in oklab, var(--c1) 35%, rgba(20, 20, 32, 0.6)); border-color: color-mix(in oklab, var(--c1) 70%, transparent); color: #fff; }
+.tog.rec { background: #ff3b30; border-color: #ff3b30; color: #fff; }
+.tog.pulse { animation: pulse 0.4s ease-in-out infinite alternate; }
+@keyframes pulse { to { box-shadow: 0 0 26px var(--c1); } }
+
+.core {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 140px; height: 140px; border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.2), rgba(8, 8, 16, 0.6) 70%);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 30px color-mix(in oklab, var(--c3) 30%, transparent), 0 0 70px color-mix(in oklab, var(--c1) 55%, transparent);
+  transition: box-shadow 0.3s;
+}
+.core::before {
+  content: ""; position: absolute; inset: -2px; border-radius: 50%; padding: 2px;
+  background: conic-gradient(from 0deg, var(--c1), var(--c3), var(--c2), transparent 70%, var(--c1));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: spin 3.2s linear infinite;
+}
+.core:hover { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 0 40px color-mix(in oklab, var(--c3) 50%, transparent), 0 0 110px color-mix(in oklab, var(--c1) 80%, transparent); }
+
+.genre {
+  display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0;
+  height: 36px; padding: 0 15px; border-radius: 999px; font-size: 13px; font-weight: 500; color: rgba(255, 255, 255, 0.7);
+  background: rgba(16, 16, 28, 0.55); border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.genre .dot { width: 8px; height: 8px; border-radius: 50%; background: linear-gradient(135deg, var(--g1), var(--g2)); box-shadow: 0 0 10px var(--g1); }
+.genre:hover { color: #fff; background: rgba(255, 255, 255, 0.1); transform: translateY(-1px); }
+.genre.on { color: #000; background: #fff; border-color: #fff; box-shadow: 0 6px 30px -6px var(--g1); }
+
+.pad {
+  position: relative; display: flex; align-items: flex-end; justify-content: flex-start; padding: 0 9px 7px;
+  min-height: 58px; border-radius: 16px; overflow: hidden; touch-action: manipulation;
+  background:
+    radial-gradient(130% 130% at 25% 10%, color-mix(in oklab, var(--pc) 26%, transparent), transparent 70%),
+    rgba(255, 255, 255, 0.035);
+  border: 1px solid color-mix(in oklab, var(--pc) 30%, rgba(255, 255, 255, 0.07));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: transform 0.09s ease-out, border-color 0.2s, background 0.9s;
+}
+.pad:hover { border-color: color-mix(in oklab, var(--pc) 75%, transparent); }
+.pad:active { transform: scale(0.93); }
+.pad .glow {
+  position: absolute; inset: 0; opacity: 0; pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, #fff 0%, var(--pc) 40%, color-mix(in oklab, var(--pc) 40%, transparent) 100%);
+}
+
+.cell {
+  position: relative; height: 22px; border-radius: 6px; background: rgba(255, 255, 255, 0.045);
+  transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
+}
+.cell.beat { background: rgba(255, 255, 255, 0.085); }
+.cell:not(:disabled):hover { background: rgba(255, 255, 255, 0.2); }
+.cell.on { background: color-mix(in oklab, var(--tc) calc(var(--v) * 100%), rgba(255, 255, 255, 0.08)); }
+.cell.now { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35); }
+.cell.on.now { background: #fff; box-shadow: 0 0 16px var(--tc); transform: scaleY(1.18); transition: none; }
+.cell.roll::after { content: ""; position: absolute; right: 3px; top: 3px; width: 4px; height: 4px; border-radius: 50%; background: rgba(0, 0, 0, 0.55); }
+
+.dice { display: flex; height: 22px; width: 22px; flex-shrink: 0; align-items: center; justify-content: center; border-radius: 50%; color: rgba(255, 255, 255, 0.35); transition: all 0.25s; }
+.dice:hover { color: #fff; background: rgba(255, 255, 255, 0.12); transform: rotate(90deg); }
+
+.note-chip {
+  flex-shrink: 0; padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 600;
+  background: color-mix(in oklab, var(--c3) 22%, transparent); border: 1px solid color-mix(in oklab, var(--c3) 50%, transparent);
+  animation: rise 0.25s ease-out both;
+}
+
+.macro .fill { background: linear-gradient(90deg, var(--c2), var(--c1), var(--c3)); }
+.macro .knob {
+  position: absolute; top: 50%; width: 14px; height: 14px; margin-top: -7px; border-radius: 50%; background: #fff; pointer-events: none;
+  box-shadow: 0 0 14px color-mix(in oklab, var(--c1) 80%, transparent), 0 2px 6px rgba(0, 0, 0, 0.5);
+  transition: transform 0.15s;
+}
+.macro:hover .knob { transform: scale(1.25); }
